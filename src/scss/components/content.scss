@@ -1,0 +1,8 @@
+main {
+  background: #1d1d1d;
+
+  @include media('<tablet') {
+    width: 100%;
+    height: 100%;
+  }
+}
