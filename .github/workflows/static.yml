@@ -12,21 +12,10 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Set up Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build the project
-        run: npm run build
-
-      - name: Upload production folder
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./production
+          path: ./  # Развертываем весь репозиторий, так как index.html в корне
 
   deploy:
     needs: build
