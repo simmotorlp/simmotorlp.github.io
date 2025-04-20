@@ -1,34 +1,45 @@
 name: Deploy to GitHub Pages
 
 on:
+  # Runs on pushes targeting the master branch
   push:
     branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+      # Step 1: Check out your repository
       - name: Checkout
         uses: actions/checkout@v3
 
+      # Step 2: Set up Node.js environment
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: 'npm'  # Caches npm dependencies for faster builds
 
+      # Step 3: Install dependencies
       - name: Install dependencies
-        run: npm ci
+        run: npm ci  # Faster, more reliable than npm install
 
+      # Step 4: Build the Vue application
       - name: Build
         run: npm run build
 
+      # Step 5: Add CNAME file for custom domain
       - name: Add CNAME file for custom domain
         run: echo "symonov.com" > dist/CNAME
 
-      - name: Deploy to master branch dist folder
-        uses: JamesIves/github-pages-deploy-action@v4
+      # Step 6: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          folder: dist
-          branch: master
-          target-folder: dist
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # GitHub automatically provides this
+          publish_dir: ./dist  # Directory with build output to publish
+          cname: symonov.com  # Sets custom domain
+          force_orphan: true  # Creates a single commit with just the latest files
