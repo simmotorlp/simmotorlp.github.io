@@ -1,0 +1,34 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Add CNAME file for custom domain
+        run: echo "symonov.com" > dist/CNAME
+
+      - name: Deploy to master branch dist folder
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
+          branch: master
+          target-folder: dist
